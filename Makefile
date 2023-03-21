@@ -278,6 +278,13 @@ help:
 	@echo ... utils.s
 .PHONY : help
 
+chat_mac: chat.cpp ggml.c utils.cpp
+	$(CC)  $(CFLAGS)   -c ggml.c -o ggml_x86.o -target x86_64-apple-macos
+	$(CC)  $(CFLAGS)   -c ggml.c -o ggml_arm.o -target arm64-apple-macos
+	
+	$(CXX) $(CXXFLAGS) chat.cpp ggml_x86.o utils.cpp -o chat_x86 $(LDFLAGS) -target x86_64-apple-macos
+	$(CXX) $(CXXFLAGS) chat.cpp ggml_arm.o utils.cpp -o chat_arm $(LDFLAGS) -target arm64-apple-macos
+	lipo -create -output chat_mac chat_x86 chat_arm
 
 
 #=============================================================================
